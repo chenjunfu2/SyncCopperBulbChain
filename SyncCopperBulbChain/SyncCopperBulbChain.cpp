@@ -1,0 +1,261 @@
+﻿#include <iostream>
+#include <string>
+#include <stdint.h>
+#include <vector>
+#include <algorithm>
+
+enum class Mode :uint8_t
+{
+	SolveProblem = 0,
+	SimulationRun,
+};
+
+constexpr static const char *const pStrMode[] =
+{
+	"SolveProblem",
+	"SimulationRun",
+};
+
+// 判断是否为2的幂
+bool IsPowerOf2(int n)
+{
+	return n > 0 && (n & (n - 1)) == 0;
+}
+
+// 计算大于等于x的最小2的幂
+uint64_t NextPowerOf2(uint64_t x)
+{
+	if (x <= 1)
+	{
+		return 1;
+	}
+
+	--x;
+	x |= x >> 1;
+	x |= x >> 2;
+	x |= x >> 4;
+	x |= x >> 8;
+	x |= x >> 16;
+	x |= x >> 32;
+	return ++x;
+}
+
+void OutputBoolList(const std::vector<uint8_t> &boolInput)
+{
+	for (auto &it : boolInput)
+	{
+		putchar("01"[it]);
+		putchar(' ');
+	}
+}
+
+void SolveProblem(std::vector<uint8_t> &boolInput)
+{
+	if (boolInput.size() <= 1)
+	{
+		printf("No Solution!\n");
+		return;
+	}
+
+	bool bOk = false;
+	for (size_t i = 0, iend = boolInput.size(); i < iend; ++i)
+	{
+		if (boolInput[i] != boolInput[0])
+		{
+			bOk = true;
+			break;
+		}
+	}
+
+	if (!bOk)
+	{
+		printf("No Solution!\n");
+		return;
+	}
+
+	//不足2的幂次循环补齐
+	size_t iptSize = boolInput.size();
+	if (!IsPowerOf2(iptSize))
+	{
+		auto nextSize = NextPowerOf2(iptSize);
+		for (size_t i = 0; i < nextSize - iptSize; ++i)
+		{
+			boolInput.push_back(boolInput[i]);
+		}
+
+		iptSize = boolInput.size();
+	}
+
+
+	std::vector<uint8_t> boolSolve;
+
+	//求十进制位数
+	size_t sDigits = (size_t)log10((iptSize - 1)) + 1;
+
+	//原始行直接输出
+	boolSolve.push_back(boolInput[0]);
+	printf("[%0*zu]: ", sDigits, iptSize - 1);
+	OutputBoolList(boolInput);
+	putchar('\n');
+
+	for (size_t i = 0; i < iptSize - 1; ++i)
+	{
+		//计算
+		bool bAllFalse = true;
+		for (size_t j = 0, jend = boolInput.size(); j + 1 < jend; ++j)
+		{
+			//XNOR
+			boolInput[j] = !(boolInput[j] ^ boolInput[j + 1]);
+			bAllFalse = bAllFalse && !boolInput[j];
+		}
+		boolInput.pop_back();//裁切末尾
+
+		if (bAllFalse)
+		{
+			break;
+		}
+
+		//进行输出
+		boolSolve.push_back(boolInput[0]);
+		printf("[%0*zu]: ", sDigits, iptSize - i - 2);
+		OutputBoolList(boolInput);
+		putchar('\n');
+	}
+
+	std::reverse(boolSolve.begin(), boolSolve.end());
+	printf("[Solved]: ");
+	OutputBoolList(boolSolve);
+	putchar('\n');
+}
+
+void SimulationRun(std::vector<uint8_t> &boolInput)
+{
+	size_t szRunCount = NextPowerOf2(boolInput.size());
+	size_t sDigits = (size_t)log10((szRunCount - 1)) + 1;
+
+	printf("[%0*zu]: ", sDigits, (size_t)0);
+	OutputBoolList(boolInput);
+	putchar('\n');
+
+	for (size_t c = 0, cend = szRunCount; c < cend; ++c)
+	{
+		bool bLast = false;//让第一次直接命中
+		for (auto &it : boolInput)
+		{
+			bool bTmp = it;
+			if (!bLast)
+			{
+				it = !bTmp;
+			}
+			bLast = bTmp;
+		}
+
+		//输出
+		printf("[%0*zu]: ", sDigits, c + 1);
+		OutputBoolList(boolInput);
+		putchar('\n');
+	}
+
+	printf("[%0*zu]: ", sDigits, szRunCount);
+	OutputBoolList(boolInput);
+	putchar('\n');
+}
+
+void Help(void)
+{
+	printf("Use:\nP    - Solve Problem\nR    - Simulation Run\nH    - Help\nQ    - Quit\n0/1  - Input Data\n");
+}
+
+int main(void)
+{
+	Mode enMode = Mode::SolveProblem;
+	std::string strLine;
+	std::vector<uint8_t> boolInput;
+
+	Help();
+	printf("\nDefault Mode Is [%s]\n", pStrMode[(uint8_t)enMode]);
+
+	while (true)
+	{
+	Retry:
+		printf("\n> ");
+		strLine.clear();
+		if (std::getline(std::cin, strLine, '\n').eof())
+		{
+			break;
+		}
+
+		if (strLine.empty())
+		{
+			continue;
+		}
+
+		if (strLine.size() == 1)
+		{
+			char c = strLine[0];
+			switch (c)
+			{
+			case 'p':
+			case 'P':
+				enMode = Mode::SolveProblem;
+				printf("Type Change To [%s]\n", pStrMode[(uint8_t)enMode]);
+				continue;
+			case 'r':
+			case 'R':
+				enMode = Mode::SimulationRun;
+				printf("Type Change To [%s]\n", pStrMode[(uint8_t)enMode]);
+				continue;
+			case 'h':
+			case 'H':
+				Help();
+				continue;
+			case 'q':
+			case 'Q':
+				return 0;
+			case '0':
+			case '1':
+				break;
+			default:
+				printf("Unknown Type[%c](0x%02X)!\n", c, c);
+				Help();
+				continue;
+			}
+		}
+
+		boolInput.clear();
+		boolInput.reserve(strLine.size());
+		for (auto &c : strLine)
+		{
+			switch (c)
+			{
+			case '0':
+				boolInput.push_back(0);
+				break;
+			case '1':
+				boolInput.push_back(1);
+				break;
+			default:
+				printf("Unknown Char[%c](0x%02X)!\n", c, c);
+				goto Retry;
+			}
+		}
+
+		//进行迭代
+		switch (enMode)
+		{
+		case Mode::SolveProblem:
+			SolveProblem(boolInput);
+			break;
+		case Mode::SimulationRun:
+			SimulationRun(boolInput);
+			break;
+		default:
+			printf("Fatal Error!\n");
+			exit(-1);
+			break;
+		}
+	}
+
+	return 0;
+}
+
