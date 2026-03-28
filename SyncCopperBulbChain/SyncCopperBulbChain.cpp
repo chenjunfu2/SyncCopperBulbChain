@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <vector>
 #include <algorithm>
+#include <ctype.h>
 
 enum class Mode :uint8_t
 {
@@ -245,6 +246,11 @@ int main(void)
 				boolInput.push_back(1);
 				break;
 			default:
+				if (isspace(c))//跳过空白
+				{
+					continue;
+				}
+
 				printf("Unknown Char[%c](0x%02X)!\n", c, c);
 				fflush(stdout);
 				goto Retry;
