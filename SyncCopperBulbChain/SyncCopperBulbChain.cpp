@@ -172,13 +172,19 @@ int main(void)
 	std::string strLine;
 	std::vector<uint8_t> boolInput;
 
+	//输出改为全缓冲以缓解大型输出问题
+	setvbuf(stdout, NULL, _IOFBF, 4096);
+
 	Help();
 	printf("\nDefault Mode Is [%s]\n", pStrMode[(uint8_t)enMode]);
+	fflush(stdout);
 
 	while (true)
 	{
 	Retry:
 		printf("\n> ");
+		fflush(stdout);
+
 		strLine.clear();
 		if (std::getline(std::cin, strLine, '\n').eof())
 		{
@@ -199,15 +205,18 @@ int main(void)
 			case 'P':
 				enMode = Mode::SolveProblem;
 				printf("Type Change To [%s]\n", pStrMode[(uint8_t)enMode]);
+				fflush(stdout);
 				continue;
 			case 'r':
 			case 'R':
 				enMode = Mode::SimulationRun;
 				printf("Type Change To [%s]\n", pStrMode[(uint8_t)enMode]);
+				fflush(stdout);
 				continue;
 			case 'h':
 			case 'H':
 				Help();
+				fflush(stdout);
 				continue;
 			case 'q':
 			case 'Q':
@@ -218,6 +227,7 @@ int main(void)
 			default:
 				printf("Unknown Type[%c](0x%02X)!\n", c, c);
 				Help();
+				fflush(stdout);
 				continue;
 			}
 		}
@@ -236,6 +246,7 @@ int main(void)
 				break;
 			default:
 				printf("Unknown Char[%c](0x%02X)!\n", c, c);
+				fflush(stdout);
 				goto Retry;
 			}
 		}
@@ -245,12 +256,15 @@ int main(void)
 		{
 		case Mode::SolveProblem:
 			SolveProblem(boolInput);
+			fflush(stdout);
 			break;
 		case Mode::SimulationRun:
 			SimulationRun(boolInput);
+			fflush(stdout);
 			break;
 		default:
 			printf("Fatal Error!\n");
+			fflush(stdout);
 			exit(-1);
 			break;
 		}
