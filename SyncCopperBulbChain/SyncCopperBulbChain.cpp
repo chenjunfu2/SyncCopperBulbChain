@@ -163,7 +163,7 @@ void SimulationRun(std::vector<uint8_t> &boolInput)
 
 void Help(void)
 {
-	printf("Use:\nP    - Solve Problem\nR    - Simulation Run\nH    - Help\nQ    - Quit\n0/1  - Input Data\n");
+	printf("Use:\nS    - Solve Problem\nR    - Simulation Run\nH    - Help\nQ    - Quit\n0/1  - Input Data\n");
 }
 
 int main(void)
@@ -201,8 +201,8 @@ int main(void)
 			char c = strLine[0];
 			switch (c)
 			{
-			case 'p':
-			case 'P':
+			case 'S':
+			case 's':
 				enMode = Mode::SolveProblem;
 				printf("Type Change To [%s]\n", pStrMode[(uint8_t)enMode]);
 				fflush(stdout);
