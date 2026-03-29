@@ -93,11 +93,11 @@ void SolveProblem(std::vector<uint8_t> &boolInput)
 	std::vector<uint8_t> boolSolve;
 
 	//求十进制位数
-	size_t sDigits = (size_t)log10((iptSize - 1)) + 1;
+	unsigned int uiDigits = (unsigned int)log10((iptSize - 1)) + 1;
 
 	//原始行直接输出
 	boolSolve.push_back(boolInput[0]);
-	printf("[%0*zu]: ", sDigits, iptSize - 1);
+	printf("[%0*zu]: ", uiDigits, iptSize - 1);
 	OutputBoolList(boolInput);
 	putchar('\n');
 
@@ -120,7 +120,7 @@ void SolveProblem(std::vector<uint8_t> &boolInput)
 
 		//进行输出
 		boolSolve.push_back(boolInput[0]);
-		printf("[%0*zu]: ", sDigits, iptSize - i - 2);
+		printf("[%0*zu]: ", uiDigits, iptSize - i - 2);
 		OutputBoolList(boolInput);
 		putchar('\n');
 	}
@@ -134,7 +134,7 @@ void SolveProblem(std::vector<uint8_t> &boolInput)
 void SimulationRun(std::vector<uint8_t> &boolInput)
 {
 	size_t szRunCount = NextPowerOf2(boolInput.size());
-	unsigned int uiDigits = (size_t)log10((szRunCount - 1)) + 1;
+	unsigned int uiDigits = (unsigned int)log10((szRunCount - 1)) + 1;
 	//如果不是补齐的运行次数，那么拷贝一次初始状态以便最终输出
 	std::vector<uint8_t> biInitialState = (boolInput.size() == szRunCount) ? boolInput : std::vector<uint8_t>{};
 
