@@ -176,7 +176,7 @@ int main(void)
 	std::vector<uint8_t> boolInput;
 
 	//输出改为全缓冲以缓解大型输出问题
-	setlocale(LC_ALL, ".UTF-8");//设置编码
+	//setlocale(LC_ALL, ".UTF-8");//设置编码
 	setvbuf(stdout, NULL, _IOFBF, 4096);
 
 	Help();
@@ -230,12 +230,12 @@ int main(void)
 					if (strTemp.empty())
 					{
 						g_strOutput[0] = "0 ";
-						printf("0 Is Modified To Default!\n");
+						printf("0 Is Modified To Default: \"%s\"\n", g_strOutput[0].c_str());
 					}
 					else
 					{
-						g_strOutput[0] = strTemp;
-						printf("0 Is Modified!\n");
+						g_strOutput[0] = std::move(strTemp);
+						printf("0 Is Modified To: \"%s\"\n", g_strOutput[0].c_str());
 					}
 
 					printf("1: \"%s\" -> ", g_strOutput[1].c_str());
@@ -247,15 +247,15 @@ int main(void)
 					if (strTemp.empty())
 					{
 						g_strOutput[1] = "1 ";
-						printf("1 Is Modified To Default!\n");
+						printf("1 Is Modified To Default: \"%s\"\n", g_strOutput[1].c_str());
 					}
 					else
 					{
-						g_strOutput[1] = strTemp;
-						printf("1 Is Modified!\n");
+						g_strOutput[1] = std::move(strTemp);
+						printf("1 Is Modified To: \"%s\"\n", g_strOutput[1].c_str());
 					}
 
-					printf("Output Modified!\n");
+					printf("Output Modified Success!\n");
 					fflush(stdout);
 				}
 				continue;
