@@ -166,7 +166,7 @@ void SimulationRun(std::vector<uint8_t> &boolInput)
 
 void Help(void)
 {
-	printf("Use:\nS    - Solve Problem\nR    - Simulation Run\nM   - Modify Output Format\nH    - Help\nQ    - Quit\n0/1  - Input Data\n");
+	printf("Use:\nS    - Solve Problem\nR    - Simulation Run\nM    - Modify Output Format\nH    - Help\nQ    - Quit\n0/1  - Input Data\n");
 }
 
 int main(void)
