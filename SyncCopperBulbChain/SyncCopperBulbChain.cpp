@@ -4,6 +4,7 @@
 #include <vector>
 #include <algorithm>
 #include <ctype.h>
+#include <locale.h>
 
 enum class Mode :uint8_t
 {
@@ -41,12 +42,13 @@ uint64_t NextPowerOf2(uint64_t x)
 	return ++x;
 }
 
+static std::string g_strOutput[2] = { "0 ","1 " };
+
 void OutputBoolList(const std::vector<uint8_t> &boolInput)
 {
 	for (auto &it : boolInput)
 	{
-		putchar("01"[it]);
-		putchar(' ');
+		fwrite(g_strOutput[it].data(), 1, g_strOutput[it].size(), stdout);
 	}
 }
 
@@ -164,7 +166,7 @@ void SimulationRun(std::vector<uint8_t> &boolInput)
 
 void Help(void)
 {
-	printf("Use:\nS    - Solve Problem\nR    - Simulation Run\nH    - Help\nQ    - Quit\n0/1  - Input Data\n");
+	printf("Use:\nS    - Solve Problem\nR    - Simulation Run\nM   - Modify Output Format\nH    - Help\nQ    - Quit\n0/1  - Input Data\n");
 }
 
 int main(void)
@@ -174,6 +176,7 @@ int main(void)
 	std::vector<uint8_t> boolInput;
 
 	//输出改为全缓冲以缓解大型输出问题
+	setlocale(LC_ALL, ".UTF-8");//设置编码
 	setvbuf(stdout, NULL, _IOFBF, 4096);
 
 	Help();
@@ -189,7 +192,7 @@ int main(void)
 		strLine.clear();
 		if (std::getline(std::cin, strLine, '\n').eof())
 		{
-			break;
+			return 0;
 		}
 
 		if (strLine.empty())
@@ -213,6 +216,48 @@ int main(void)
 				enMode = Mode::SimulationRun;
 				printf("Type Change To [%s]\n", pStrMode[(uint8_t)enMode]);
 				fflush(stdout);
+				continue;
+			case 'm':
+			case 'M':
+				{
+					std::string strTemp;
+					printf("0: \"%s\" -> ", g_strOutput[0].c_str());
+					fflush(stdout);
+					if (std::getline(std::cin, strTemp, '\n').eof())
+					{
+						return 0;
+					}
+					if (strTemp.empty())
+					{
+						g_strOutput[0] = "0 ";
+						printf("0 Is Modified To Default!\n");
+					}
+					else
+					{
+						g_strOutput[0] = strTemp;
+						printf("0 Is Modified!\n");
+					}
+
+					printf("1: \"%s\" -> ", g_strOutput[1].c_str());
+					fflush(stdout);
+					if (std::getline(std::cin, strTemp, '\n').eof())
+					{
+						return 0;
+					}
+					if (strTemp.empty())
+					{
+						g_strOutput[1] = "1 ";
+						printf("1 Is Modified To Default!\n");
+					}
+					else
+					{
+						g_strOutput[1] = strTemp;
+						printf("1 Is Modified!\n");
+					}
+
+					printf("Output Modified!\n");
+					fflush(stdout);
+				}
 				continue;
 			case 'h':
 			case 'H':
