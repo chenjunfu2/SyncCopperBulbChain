@@ -4,7 +4,7 @@
 #include <vector>
 #include <algorithm>
 #include <ctype.h>
-#include <locale.h>
+//#include <locale.h>
 
 enum class Mode :uint8_t
 {
