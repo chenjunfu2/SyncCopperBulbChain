@@ -162,10 +162,13 @@ void SimulationRun(std::vector<uint8_t> &boolInput)
 		putchar('\n');
 	}
 
-	//最终输出一次初始状态，代表循环完成
-	printf("[%0*zu]: ", uiDigits, szRunCount + 1);
-	OutputBoolList(biInitialState);
-	putchar('\n');
+	//如果不是补齐的运行次数，那么输出一次初始状态，代表循环完成
+	if (uiDigits != szRunCount)
+	{
+		printf("[%0*zu]: ", uiDigits, szRunCount + 1);
+		OutputBoolList(biInitialState);
+		putchar('\n');
+	}
 }
 
 void Help(void)
