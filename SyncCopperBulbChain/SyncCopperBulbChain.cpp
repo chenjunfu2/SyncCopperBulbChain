@@ -134,12 +134,15 @@ void SolveProblem(std::vector<uint8_t> &boolInput)
 void SimulationRun(std::vector<uint8_t> &boolInput)
 {
 	size_t szRunCount = NextPowerOf2(boolInput.size());
-	size_t sDigits = (size_t)log10((szRunCount - 1)) + 1;
+	unsigned int uiDigits = (size_t)log10((szRunCount - 1)) + 1;
+	std::vector<uint8_t> biInitialState = boolInput;
 
-	printf("[%0*zu]: ", sDigits, (size_t)0);
-	OutputBoolList(boolInput);
+	//输出一次初始状态，代表循环开始
+	printf("[%0*zu]: ", uiDigits, (size_t)0);
+	OutputBoolList(biInitialState);
 	putchar('\n');
 
+	//运算中间态
 	for (size_t c = 0, cend = szRunCount; c < cend; ++c)
 	{
 		bool bLast = false;//让第一次直接命中
@@ -154,13 +157,14 @@ void SimulationRun(std::vector<uint8_t> &boolInput)
 		}
 
 		//输出
-		printf("[%0*zu]: ", sDigits, c + 1);
+		printf("[%0*zu]: ", uiDigits, c + 1);
 		OutputBoolList(boolInput);
 		putchar('\n');
 	}
 
-	printf("[%0*zu]: ", sDigits, szRunCount);
-	OutputBoolList(boolInput);
+	//最终输出一次初始状态，代表循环完成
+	printf("[%0*zu]: ", uiDigits, szRunCount + 1);
+	OutputBoolList(biInitialState);
 	putchar('\n');
 }
 
