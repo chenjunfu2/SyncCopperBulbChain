@@ -136,7 +136,7 @@ void SimulationRun(std::vector<uint8_t> &boolInput)
 	size_t szRunCount = NextPowerOf2(boolInput.size());
 	unsigned int uiDigits = (size_t)log10((szRunCount - 1)) + 1;
 	//如果不是补齐的运行次数，那么拷贝一次初始状态以便最终输出
-	std::vector<uint8_t> biInitialState = (boolInput.size() != szRunCount) ? boolInput : std::vector<uint8_t>{};
+	std::vector<uint8_t> biInitialState = (boolInput.size() == szRunCount) ? boolInput : std::vector<uint8_t>{};
 
 	//输出一次初始状态，代表循环开始
 	printf("[%0*zu]: ", uiDigits, (size_t)0);
