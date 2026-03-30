@@ -233,13 +233,13 @@ int main(void)
 			case 'S':
 			case 's':
 				enMode = Mode::SolveProblem;
-				printf("Type Change To [%s]\n", pStrMode[(uint8_t)enMode]);
+				printf("Mode Change To [%s]\n", pStrMode[(uint8_t)enMode]);
 				fflush(stdout);
 				continue;
 			case 'r':
 			case 'R':
 				enMode = Mode::SimulationRun;
-				printf("Type Change To [%s]\n", pStrMode[(uint8_t)enMode]);
+				printf("Mode Change To [%s]\n", pStrMode[(uint8_t)enMode]);
 				fflush(stdout);
 				continue;
 			case 'm':
