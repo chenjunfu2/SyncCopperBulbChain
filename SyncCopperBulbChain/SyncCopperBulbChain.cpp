@@ -89,14 +89,15 @@ void SolveProblem(std::vector<uint8_t> &boolInput)
 		iptSize = boolInput.size();
 	}
 
-
-	std::vector<uint8_t> boolSolve;
-
 	//求十进制位数
 	unsigned int uiDigits = (unsigned int)log10((iptSize - 1)) + 1;
 
+	//求解值
+	std::vector<uint8_t> boolSolve;
+	boolSolve.reserve(iptSize - 1);
+
 	//原始行直接输出
-	boolSolve.push_back(boolInput[0]);
+	boolSolve.push_back(boolInput.front());
 	printf("[%0*zu]: ", uiDigits, iptSize - 1);
 	OutputBoolList(boolInput);
 	putchar('\n');
@@ -119,7 +120,7 @@ void SolveProblem(std::vector<uint8_t> &boolInput)
 		}
 
 		//进行输出
-		boolSolve.push_back(boolInput[0]);
+		boolSolve.push_back(boolInput.front());
 		printf("[%0*zu]: ", uiDigits, iptSize - i - 2);
 		OutputBoolList(boolInput);
 		putchar('\n');
@@ -135,10 +136,16 @@ void SimulationRun(std::vector<uint8_t> &boolInput)
 {
 	size_t szRunCount = NextPowerOf2(boolInput.size());
 	unsigned int uiDigits = (unsigned int)log10((szRunCount - 1)) + 1;
+
 	//如果不是补齐的运行次数，那么拷贝一次初始状态以便最终输出
 	std::vector<uint8_t> biInitialState = (boolInput.size() == szRunCount) ? boolInput : std::vector<uint8_t>{};
 
+	//运行结果
+	std::vector<uint8_t> boolResult;
+	boolResult.reserve(szRunCount);
+
 	//输出一次初始状态，代表循环开始
+	boolResult.push_back(boolInput.back());
 	printf("[%0*zu]: ", uiDigits, (size_t)0);
 	OutputBoolList(boolInput);
 	putchar('\n');
@@ -158,6 +165,7 @@ void SimulationRun(std::vector<uint8_t> &boolInput)
 		}
 
 		//输出
+		boolResult.push_back(boolInput.back());
 		printf("[%0*zu]: ", uiDigits, c + 1);
 		OutputBoolList(boolInput);
 		putchar('\n');
@@ -166,10 +174,19 @@ void SimulationRun(std::vector<uint8_t> &boolInput)
 	//如果不是补齐的运行次数，那么输出一次初始状态，代表循环完成
 	if (!biInitialState.empty())
 	{
-		printf("[%0*zu]: ", uiDigits, szRunCount + 1);
+		printf("[%0*zu]: ", uiDigits, szRunCount + 1);//此处不插入boolResult
 		OutputBoolList(biInitialState);
 		putchar('\n');
 	}
+	else
+	{
+		boolResult.pop_back();//重复插入，去掉末尾重复的开头值
+	}
+
+	//输出运行结果
+	printf("[Result]: ");
+	OutputBoolList(boolResult);
+	putchar('\n');
 }
 
 void Help(void)
