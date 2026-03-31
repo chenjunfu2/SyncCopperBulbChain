@@ -134,15 +134,15 @@ void SolveProblem(std::vector<uint8_t> &boolInput)
 
 void SimulationRun(std::vector<uint8_t> &boolInput)
 {
-	size_t szRunCount = NextPowerOf2(boolInput.size());
-	unsigned int uiDigits = (unsigned int)log10((szRunCount - 1)) + 1;
+	//任何情况下，对size+1都会使得值对齐到下一个2的倍数边界，也就是必然运行到环绕值
+	size_t szRunCount = NextPowerOf2(boolInput.size() + 1);
 
-	//如果不是补齐的运行次数，那么拷贝一次初始状态以便最终输出
-	std::vector<uint8_t> biInitialState = (boolInput.size() == szRunCount) ? boolInput : std::vector<uint8_t>{};
+	//计算运行次数位数
+	unsigned int uiDigits = (unsigned int)log10((szRunCount - 1)) + 1;
 
 	//运行结果
 	std::vector<uint8_t> boolResult;
-	boolResult.reserve(szRunCount);
+	boolResult.reserve(szRunCount);//保留大小
 
 	//输出一次初始状态，代表循环开始
 	boolResult.push_back(boolInput.back());
@@ -171,17 +171,7 @@ void SimulationRun(std::vector<uint8_t> &boolInput)
 		putchar('\n');
 	}
 
-	//如果不是补齐的运行次数，那么输出一次初始状态，代表循环完成
-	if (!biInitialState.empty())
-	{
-		printf("[%0*zu]: ", uiDigits, szRunCount + 1);//此处不插入boolResult
-		OutputBoolList(biInitialState);
-		putchar('\n');
-	}
-	else
-	{
-		boolResult.pop_back();//重复插入，去掉末尾重复的开头值
-	}
+	boolResult.pop_back();//因为总是运行到环绕值，所以去掉末尾重复的开头值
 
 	//输出运行结果
 	printf("[Result]: ");
